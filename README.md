@@ -136,6 +136,7 @@ Programmes/logiciels/ressources utilisés pour développer notre projet
 
 - [Solidity](https://docs.soliditylang.org/en/v0.6.0/) - Language blockchain
 - [VSCode](https://code.visualstudio.com/) - Editeur de textes
+- [Truffle]
 - []() -
 
 ## Versions
@@ -148,15 +149,16 @@ Git : [Cliquer pour afficher](https://github.com/Kali-Design/dapp-crowdfunding-b
 
 - **Henri-Michel LEOCADIE** _alias_ [Kali-Design](https://github.com/kali-Design)
 
-**Avec les conseils de nos formateurs :**
+**Avec les conseils de nos formateurs Alyra :**
 
 - [Paulina Hetman] _alias_ [Pehaa](https://github.com/pehaa)
 - [Sofiane ] _alias_ [AbsoluteVirtueXI](https://github.com/AbsoluteVirtueXI)
 - [Franck Chen] _alias_ [Franck]()
 
-Merci de nous avoir aidé à réaliser ce projet !
+Merci !
 
 ## License
 
 Ce projet est sous licence `MIT` - voir le fichier [LICENSE.md](LICENSE.md) pour plus d'informations
+# dapp-crowdfunding-back
 # dapp-crowdfunding-back
