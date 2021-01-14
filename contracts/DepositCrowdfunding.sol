@@ -1,88 +1,72 @@
-// address abi : "0xcDf4C8AC61eE80c55367CE347742766a6Ea3C0D2"
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
-/// @title Dapp de crowdfunding en Ether pour definir le champ de ce Smart Contract
+/// address du Smart Contract depuis migration : "0xcDf4C8AC61eE80c55367CE347742766a6Ea3C0D2"
+
+/// @title Dapp de crowdfunding en Ether pour definir la structure et les fonctions de ce Smart Contract
 /// @author Henri-Michel LEOCADIE
-/// @notice Vous ne pouvez utliser ce contrat que pour faire des dépots et retour éventuel
-/// @dev Tous les appels de fonction sont implémentés sans effects secondaires     
+/// @notice Vous ne pouvez utliser ce contrat que pour faire des dépots et retour éventuel du ou des dépôts la plus basique
+/// @dev Tous les appels de fonction sont implémentés sans effects secondaires
+
+contract DepositCrowdfunding {
+
+    address payable private _superAdmin; // Adresse de la personne qui déploie
+
+/// Vérification super admin
+    modifier isSuperAdmin() {
+        require(msg.sender == _superAdmin, "Vous n'avez pas le droit d'utiliser cette fonction");
+        _;
+    }
+ /// Structure de l'utilisateur
+struct Deposit {
+	string name; // Nom de l'utilisateur 
+	string email; // Email de l'utilisateur
+	uint value; // Le montant qui versera
+	bool complete; // Toutes les informations sont vraies
+	uint approvalCount; // Le montant de l'utilisateur est approuvé
+	mapping(address => bool) approvals; // Toutes les adresses sont approuvées
+	}
    
-// Defining a Contract 
-contract DepositCrowdfunding{ 
-  
-    // Déclaration des variables d'état
-    address payable public buyer; 
-    address payable public seller; 
-    address payable public arbiter; 
-    mapping(address => uint) TotalAmount; 
-  
-    // Définition d'un énumérateur 'État'
-    enum State{ 
-         
-        // Voici les données membres
-        awate_payment, awate_delivery, complete  
-    } 
-  
-    // Déclaration de l'objet de l'énumérateur
-    State public state; 
-      
-    // Définition du modificateur de fonction 'instate' 
-    modifier instate(State expected_state){ 
-          
-        require(state == expected_state); 
-        _; 
-    } 
-  
-   // Définition du modificateur de fonction 'OnlyBuyer'
-    modifier onlyBuyer(){ 
-        require(msg.sender == buyer ||  
-                msg.sender == arbiter); 
-        _; 
-    } 
-  
-    // Défintion du modificateur de fonction 'OnlySeller'
-    modifier onlySeller(){ 
-        require(msg.sender == seller); 
-        _; 
-    } 
-      
-    // Défintion du constructeur
-    constructor(address payable _buyer,  
-                address payable _sender) public{ 
+    address payable owner;
+/// L'adresse du propriétaire 
+    constructor(uint, address) public {
+        owner = owner;
+/// Constructeur comme variable d'état
+   
+     owner = msg.sender;
+/// Le propriétaire = owner appelle le Smart Contract DepositCrowdfunding
+
+    }
+    
+    function deposit() public payable {
+/// Fonction pour déposer de l'Ether
+        require(owner == msg.sender);
+/// Fonction pour transférer de l'Ether 
+        owner.transfer(address(this).balance);
+    }
+    
+/// Structure pour récupérer son Ether
+    struct Withdraw {
+	string name;
+	string email;
+	uint value;
+
+	}
+    
+    function withdraw() public payable {
+// Seul le propriétaire sera exigé pour récupérer son Ether         
+        require(owner == msg.sender);
+// Fonction pour récupérer son Ether à partir de l'adresse de dépôt et vérifier sa balance
+        owner.transfer(address(this).balance);
+    }
+    
+    function withdraw(uint256 amount) public {
+// Fonction pour récupérer son Ether et voir sa balance sur son compte du retour de son Ether
+        require(owner == msg.sender);
+        require(address(this).balance >= amount);
         
-        // Assignation des valeurs 
-        // Variables d'état
-        arbiter = msg.sender; 
-        buyer = _buyer; 
-        seller = _sender; 
-        state = State.awate_payment; 
-    } 
-      
-    /// Définition de la fonction pour confirmer le paiement
-    /// @dev Permet de confirme le paiement
-    function confirm_payment() onlyBuyer instate( 
-      State.awate_payment) public payable{ 
-      
-        state = State.awate_delivery; 
-          
-    } 
-      
-    /// Définition de la fonction pour confirmer la transaction
-    /// @dev Permet de confirmer le statut du paiement et sa balance
-    function confirm_Delivery() onlyBuyer instate( 
-      State.awate_delivery) public{ 
-          
-        seller.transfer(address(this).balance); 
-        state = State.complete; 
-    } 
+        owner.transfer(amount);
+    }
+    
   
-    /// Définition de la fonction pour retourner le paiement
-    /// @dev Permet de récuperer son paiement et retourner dans sa balance
-    function ReturnPayment() onlySeller instate( 
-      State.awate_delivery)public{ 
-        
-         
-       buyer.transfer(address(this).balance); 
-    } 
-      
-} 
+}
