@@ -33,8 +33,7 @@ contract DepositCrowdfunding {
 
          _balances[msg.sender] = _balances[msg.sender].sub(_amount);
 
-        
-        //_balances[msg.sender] = 0;
+    
  /// Appel de la récupération de l'Ether dans sa balance   
         (bool success, ) = _to.call{value: _amount}(""); 
         require(success,"failed to transfer the funds");
