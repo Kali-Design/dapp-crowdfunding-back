@@ -9,57 +9,43 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 /// @notice Vous ne pouvez utliser ce contrat que pour faire des dépots et retour éventuel du ou des dépôts la plus basique
 /// @dev Tous les appels de fonction sont implémentés sans effects secondaires
 
+
 contract DepositCrowdfunding {
     
     using SafeMath for uint256;
-    uint256 Amount;
-    address Addr;
     
-    mapping(address => uint256) private _balances;
+ mapping(address => uint256) public balances;
 
-    function deposit() public payable {
-        _balances[msg.sender] = _balances[msg.sender].add(msg.value);
+    event Deposit(address sender, uint256 amount);
+    event Withdrawal(address receiver, uint256 amount);
+    event Transfer(address sender, address receiver, uint256 amount);
+
+ function deposit() public payable {
+        emit Deposit(msg.sender, msg.value);
+        balances[msg.sender] = balances[msg.sender].add(msg.value);
     }
 
-    function balanceOf(address addr) public view returns (uint256) {
-        return _balances[addr];
+    function withdraw(uint256 amount) public { 
+        require(balances[msg.sender] >= amount, "Insufficient funds");
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+        emit Withdrawal(msg.sender, amount);
+        msg.sender.transfer(amount);
     }
 
-    
-    /*function transfer(address dst, uint256 amount) public {
-        require(_balances[msg.sender] >= amount, "DepositCrowdfunding: Not enough funds for transfer");
-        Amount = amount;
-        _balances[dst] = _balances[dst].add(amount);
-        _balances[msg.sender] = _balances[msg.sender].sub(amount);
-        
+    function transfer(address receiver, uint256 amount) public { // SafeMath 
+        require(balances[msg.sender] >= amount, "Insufficient funds");
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+        balances[receiver] = balances[receiver].add(amount);
+        emit Transfer(msg.sender, receiver, amount);
+    }
+
+        // Développement futur 
+    /*function transfer(address[] memory receivers, uint amount) public {
+        require(balances[msg.sender] >= receivers.length * amount, "Insufficient funds");
+        for (uint i=0; i<receivers.length; i++) {
+            balances[msg.sender] -= amount; //laisser SafeMath faire son travaille 
+            balances[receivers[i]] += amount; //laisser SafeMath faire son travaille
+             emit Transfer(msg.sender, receivers[i], amount);*
+        }
     }*/
-    
-    function transfer(address _recipient, uint256 _amount) public returns (bool) {
-        require(_balances[msg.sender] >= _amount, 'transfer amount exceeds balance');
-        _balances[msg.sender] = _balances[msg.sender].sub(_amount);
-        _balances[_recipient] = _balances[_recipient].add(_amount);
-        emit Transfer(msg.sender, _recipient, _amount);
-        return true;
-
-    }
-
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
-    
-    function withdraw(address addr, uint _amount, address payable _to) public {
-        require(_balances[msg.sender] > 0, "DepositCrowdfunding: 0 ethers in wallet");
-        Addr = addr;
-         _balances[msg.sender] = _balances[msg.sender].sub(_amount);
-
-        
-        //_balances[msg.sender] = 0;
-    
-        (bool success, ) = _to.call{value: _amount}(""); 
-        require(success,"failed to transfer the funds");
-    }
-    
-    function getAmount() public view returns (uint256) {
-        return Amount;
-    }
-    
-    
 }
