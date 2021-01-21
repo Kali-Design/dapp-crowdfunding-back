@@ -8,12 +8,12 @@ const { expect } = require('chai');
 
 const DepositCrowdfunding = contract.fromArtifact('DepositCrowdfunding ');
 
-describe('Formation', async function () {
+describe('Crowdfunting', async function () {
   const [dev, owner, user1] = accounts;
   const MESSAGE = 'WELCOME TO MY COURSES';
   const _MESSAGE = 'NEW MESSAGE';
 
-  context('Formation initial state', function () {
+  context('Crowdfunding initial state', function () {
     // Execute this before each tests
     beforeEach(async function () {
       this.depositcrowdfunding = await DepositCrowdfunding.new(owner, MESSAGE, { from: dev });
@@ -33,7 +33,7 @@ describe('Formation', async function () {
     });
   });
 
-  context('Formation ownership', function () {
+  context('Crowdfunding ownership', function () {
     beforeEach(async function () {
       this.depositcrowdfunding = await DepositCrowdfunding.new(owner, MESSAGE, { from: dev });
     });
@@ -42,7 +42,7 @@ describe('Formation', async function () {
       expect(await this.depositcrowdfunding.getMessage()).to.equal(_MESSAGE);
     });
   });
-  context('Formation time functions', function () {
+  context('Crowdfunding time functions', function () {
     beforeEach(async function () {
       this.formation = await DepositCrowdfunding.new(owner, MESSAGE, { from: dev });
     });
