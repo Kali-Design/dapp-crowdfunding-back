@@ -1,47 +1,58 @@
-/* eslint-disable no-undef */
-// eslint-disable-next-line no-unused-vars
 
-import { accounts, contract } from '@openzeppelin/test-environment';
+/* eslint-disable no-unused-expressions */
+const { accounts, contract } = require('@openzeppelin/test-environment');
 
-import { expect } from 'chai';
+const { time } = require('@openzeppelin/test-helpers');
 
-// eslint-disable-next-line no-unused-vars
+const { expect } = require('chai');
 
-const DepositCrowdfunding = contract.fromArtifact('DepositCrowdfunding');
+const DepositCrowdfunding = contract.fromArtifact('DepositCrowdfunding ');
 
-
-describe('DepositCrowdfunding', function () {
-  this.timout(0);
-
-  const [owner, dev] = accounts;
-  const MESSAGE = 'WELCOME IN THE BLOCKCHAIN';
+describe('Formation', async function () {
+  const [dev, owner, user1] = accounts;
+  const MESSAGE = 'WELCOME TO MY COURSES';
   const _MESSAGE = 'NEW MESSAGE';
 
-  context('DepositCrowdfunding initial state', function () {
+  context('Formation initial state', function () {
+    // Execute this before each tests
     beforeEach(async function () {
-      this.depositCrowdfunding = await DepositCrowdfunding.new(owner, MESSAGE, { from: dev });
-    })
+      this.depositcrowdfunding = await DepositCrowdfunding.new(owner, MESSAGE, { from: dev });
+    });
 
     it(`has message ${MESSAGE}`, async function () {
-      expect(await this.depositCrowdfunding.getMessage()).to.equal(MESSAGE);
-
-    })
+      expect(await this.depositcrowdfunding.getMessage()).to.equal(MESSAGE);
+    });
 
     it('has owner', async function () {
-      expect(await this.depositCrowdfunding.owner()).to.equal(owner);
+      expect(await this.depositcrowdfunding.owner()).to.equal(owner);
     });
 
-    context('DepositCrowdfunding functions', function () {
-      beforeEach(async function () {
-        this.depositCrowdfunding = await DepositCrowdfunding.new(owner, MESSAGE, { from: dev });
-      });
-      it('handles not finished yet', async function () {
-        expect(await this.depositCrowdfunding.goodbye({ from: dev })).to.equal('not finished yet!!');
-      });
-
-      it('handles finished', async function () {
-        await time.increase(time.duration.weeks(24));
-        expect(await this.depositCrowdfunding.goodbye({ from: dev })).to.equal('congratulations and goodbye!!');
-      });
+    it('has starting date', async function () {
+      const _current = await time.latest();
+      expect(await this.DepositCrowdfunding.getStartDate()).to.be.a.bignumber.equal(_current);
     });
   });
+
+  context('Formation ownership', function () {
+    beforeEach(async function () {
+      this.depositcrowdfunding = await DepositCrowdfunding.new(owner, MESSAGE, { from: dev });
+    });
+    it('set message', async function () {
+      await this.depositcrowdfunding.setMessage(_MESSAGE, { from: owner });
+      expect(await this.depositcrowdfunding.getMessage()).to.equal(_MESSAGE);
+    });
+  });
+  context('Formation time functions', function () {
+    beforeEach(async function () {
+      this.formation = await DepositCrowdfunding.new(owner, MESSAGE, { from: dev });
+    });
+    it('handles not finished yet', async function () {
+      expect(await this.depositcrowdfunding.goodbye({ from: user1 })).to.equal('not finished yet!!');
+    });
+
+    it('handles finished courses', async function () {
+      await time.increase(time.duration.weeks(24));
+      expect(await this.depositcrowdfunding.goodbye({ from: user1 })).to.equal('congratulations and goodbye!!');
+    });
+  });
+});
